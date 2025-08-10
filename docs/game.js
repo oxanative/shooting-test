@@ -2,10 +2,28 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-const WIDTH = 720;
-const HEIGHT = 960;
+let WIDTH = window.innerWidth;
+let HEIGHT = window.innerHeight;
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
+
+// リサイズ対応
+window.addEventListener('resize', () => {
+    WIDTH = window.innerWidth;
+    HEIGHT = window.innerHeight;
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+    // 星の再配置
+    stars.length = 0;
+    for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push({
+            x: Math.random() * WIDTH,
+            y: Math.random() * HEIGHT,
+            speed: 0.5 + Math.random() * 1.5,
+            size: Math.random() * 1.5 + 0.5
+        });
+    }
+});
 
 // 星の設定
 const STAR_COUNT = 100;
@@ -47,11 +65,22 @@ let enemyTimer = 0;
 // 爆発パーティクル
 const explosions = [];
 
+
 // マウス操作
 canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
     player.x = e.clientX - rect.left - player.width / 2;
 });
+
+// タッチ操作
+canvas.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        player.x = touch.clientX - rect.left - player.width / 2;
+    }
+    e.preventDefault();
+}, { passive: false });
 
 
 
